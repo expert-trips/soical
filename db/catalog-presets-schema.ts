@@ -1,0 +1,2 @@
+import {sqliteTable,text,integer,uniqueIndex} from 'drizzle-orm/sqlite-core';
+export const catalogPresetVersions=sqliteTable('catalog_preset_versions',{rowId:integer('row_id').primaryKey({autoIncrement:true}),id:text('id').notNull(),revision:integer('revision').notNull(),payload:text('payload').notNull(),actor:text('actor').notNull(),createdAt:text('created_at').notNull()},t=>[uniqueIndex('idx_catalog_preset_revision').on(t.id,t.revision)]);

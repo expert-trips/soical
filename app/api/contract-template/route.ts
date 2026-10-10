@@ -1,0 +1,8 @@
+import {getContractTemplate,saveContractTemplate,templateHistory,templateOwner} from '@/db/contract-template';
+import {validateTemplate} from '@/lib/contract-template';
+export async function GET(){if(!await templateOwner())return new Response(null,{status:403});return Response.json({...await getContractTemplate(),history:await templateHistory()},{headers:{'cache-control':'private, no-store'}});}
+export async function PUT(req:Request){const actor=await templateOwner();if(!actor)return new Response(null,{status:403});if(req.headers.get('sec-fetch-site')==='cross-site')return new Response(null,{status:403});
+ const reader=req.body?.getReader();if(!reader)return new Response(null,{status:400});let size=0;const parts:Uint8Array[]=[];for(;;){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>500000){await reader.cancel();return new Response(null,{status:413});}parts.push(value);}const bytes=new Uint8Array(size);let offset=0;for(const p of parts){bytes.set(p,offset);offset+=p.length;}
+ let body:Record<string,unknown>;try{body=JSON.parse(new TextDecoder().decode(bytes))}catch{return new Response(null,{status:400});}if(!body||!validateTemplate(body.template)||!Number.isInteger(body.revision)||Number(body.revision)<0)return Response.json({error:'تحقق من البنود والمتغيرات؛ لا يمكن حفظ نص فارغ أو متغير غير معروف.'},{status:400});
+ const result=await saveContractTemplate(body.template,Number(body.revision),actor);if(!result)return Response.json({error:'حُفظ تعديل أحدث من جهاز آخر. أعد تحميل الصفحة قبل التعديل لتجنب الكتابة فوقه.'},{status:409});return Response.json({...result,history:await templateHistory()});
+}

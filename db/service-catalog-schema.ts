@@ -1,0 +1,3 @@
+import {sqliteTable,text,integer,uniqueIndex} from 'drizzle-orm/sqlite-core';
+export const serviceCatalogVersions=sqliteTable('service_catalog_versions',{revision:integer('revision').primaryKey({autoIncrement:true}),payload:text('payload').notNull(),actor:text('actor').notNull(),reason:text('reason').notNull(),createdAt:text('created_at').notNull()});
+export const serviceQuoteVersions=sqliteTable('service_quote_versions',{id:integer('id').primaryKey({autoIncrement:true}),quoteId:text('quote_id').notNull(),revision:integer('revision').notNull(),payload:text('payload').notNull(),actor:text('actor').notNull(),createdAt:text('created_at').notNull()},t=>[uniqueIndex('idx_service_quote_revision').on(t.quoteId,t.revision)]);

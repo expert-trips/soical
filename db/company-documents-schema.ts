@@ -1,0 +1,4 @@
+import {sqliteTable,text,integer,index} from 'drizzle-orm/sqlite-core';
+export const companyDocuments=sqliteTable('company_documents',{
+ id:text('id').primaryKey(),organization_id:text('organization_id').notNull(),kind:text('kind').notNull(),title:text('title').notNull(),filename:text('filename').notNull(),mime_type:text('mime_type').notNull(),size:integer('size').notNull(),object_key:text('object_key').notNull(),sha256:text('sha256').notNull(),expires_on:text('expires_on').notNull().default(''),notes:text('notes').notNull().default(''),review_status:text('review_status').notNull().default('لم يُراجع'),uploaded_by:text('uploaded_by').notNull(),created_at:text('created_at').notNull(),reviewed_by:text('reviewed_by').notNull().default(''),reviewed_at:text('reviewed_at').notNull().default('')
+},t=>[index('idx_company_documents_org').on(t.organization_id,t.created_at)]);

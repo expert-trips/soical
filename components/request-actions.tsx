@@ -1,0 +1,11 @@
+'use client';
+import { useState } from 'react';
+import { Check, MessageSquareText, Siren } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import type { TravelRequest } from '@/db/requests';
+
+export function RequestActions({request}:{request:TravelRequest}){
+ const [status,setStatus]=useState(request.status); const [assignee,setAssignee]=useState(request.assignee); const [notice,setNotice]=useState(''); const [busy,setBusy]=useState(false);
+ async function save(next:string){setBusy(true);setNotice('');try{const res=await fetch(`/api/requests/${request.id}`,{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({status:next,assignee})});if(!res.ok)throw new Error();setStatus(next);setNotice(`تم تحديث الطلب إلى «${next}» بنجاح.`);}catch{setNotice('تعذر حفظ التحديث. حاول مرة أخرى.');}finally{setBusy(false)}}
+ return <div className="space-y-4"><div className="rounded-xl bg-white p-5 ring-1 ring-[#dfe5e6]"><h3 className="mb-4 font-bold">الإسناد والإجراء</h3><label className="mb-1 block text-xs text-[#718187]">المكلّف</label><select value={assignee} onChange={e=>setAssignee(e.target.value)} className="mb-4 h-10 w-full rounded-lg border border-[#dfe5e6] px-3 text-sm"><option>سارة الحربي</option><option>محمد الغامدي</option><option>نورة القحطاني</option><option>خالد العتيبي</option></select><div className="grid gap-2"><Button disabled={busy} onClick={()=>save(request.fulfillment_model==='مشروع مخصص'?'إعداد عرض':'قيد التنفيذ')} className="h-10 bg-[#DE921A] text-white hover:bg-[#c98012]"><Check/>{request.fulfillment_model==='مشروع مخصص'?'بدء إعداد العرض':'قبول الطلب'}</Button><Button disabled={busy} onClick={()=>save('نقص معلومات')} variant="outline" className="h-10"><MessageSquareText/>طلب معلومات</Button><Button disabled={busy} onClick={()=>save('تم التصعيد')} variant="destructive" className="h-10"><Siren/>تصعيد الحالة</Button></div>{notice&&<div aria-live="polite" className={`mt-4 rounded-lg p-3 text-xs ${notice.startsWith('تم')?'bg-emerald-50 text-emerald-700':'bg-red-50 text-red-700'}`}>{notice}</div>}</div><div className="rounded-xl bg-[#273840] p-5 text-white"><div className="text-xs text-white/55">الحالة الحالية</div><div className="mt-2 font-bold">{status}</div><div className="mt-4 text-xs text-white/55">كل تحديث يُسجل في سجل المراجعة.</div></div></div>
+}

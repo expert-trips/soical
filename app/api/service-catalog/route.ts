@@ -1,0 +1,6 @@
+import {headers} from 'next/headers';
+import {templateOwner} from '@/db/contract-template';
+import {getServiceCatalog,saveCatalog,catalogHistory} from '@/db/service-catalog';
+import {validateServices} from '@/lib/service-catalog';
+export async function GET(){if(!(await headers()).get('oai-authenticated-user-id'))return new Response(null,{status:401});return Response.json({catalog:await getServiceCatalog(),history:await catalogHistory()},{headers:{'Cache-Control':'no-store'}})}
+export async function PUT(req:Request){const actor=await templateOwner();if(!actor||req.headers.get('sec-fetch-site')==='cross-site')return new Response(null,{status:403});let b;try{const text=await req.text();if(text.length>180000)return new Response(null,{status:413});b=JSON.parse(text)}catch{return new Response(null,{status:400})}if(!b||!validateServices(b.services)||!Number.isInteger(b.revision)||b.revision<0||typeof b.reason!=='string'||!b.reason.trim()||b.reason.length>250)return Response.json({error:'راجع الحقول. تفعيل الخدمة يتطلب وصفًا وشروطًا وسياسات تعديل واسترداد وطريقة تنفيذ غير الربط.'},{status:400});const catalog=await saveCatalog(b.services,b.revision,b.reason.trim(),actor);return catalog?Response.json({catalog,history:await catalogHistory()}):Response.json({error:'تغيّرت الإعدادات في جلسة أخرى. أعد تحميل الصفحة قبل الحفظ.'},{status:409})}

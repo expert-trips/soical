@@ -21,4 +21,3 @@ Production authentication depends on the hosting platform's trusted authenticate
 Includes application source, assets, dependency lockfile, database migrations, and existing tests. Live database records, uploaded customer documents, secrets, dependencies, and generated build output are not included. Publishing this repository does not deploy or migrate the live website.
 
 Imported from local source revision `839da1a`.
-

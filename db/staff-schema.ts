@@ -1,0 +1,2 @@
+import {sqliteTable,text,uniqueIndex} from 'drizzle-orm/sqlite-core';
+export const staff=sqliteTable('internal_staff',{id:text('id').primaryKey(),name:text('name').notNull(),email:text('email').notNull(),phone:text('phone').notNull().default(''),department:text('department').notNull().default(''),job_title:text('job_title').notNull().default(''),role:text('role').notNull(),status:text('status').notNull(),created_at:text('created_at').notNull(),updated_at:text('updated_at').notNull()},t=>[uniqueIndex('idx_internal_staff_email').on(t.email)]);

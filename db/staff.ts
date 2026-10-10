@@ -1,0 +1,5 @@
+import {env} from 'cloudflare:workers';
+import type {StaffRecord} from '@/lib/staff-access';
+export async function findStaff(email:string){return env.DB.prepare('SELECT * FROM internal_staff WHERE email=?').bind(email.toLowerCase()).first<StaffRecord>();}
+export async function listStaff(){return (await env.DB.prepare('SELECT * FROM internal_staff ORDER BY created_at DESC').all<StaffRecord>()).results;}
+export async function saveStaff(d:Omit<StaffRecord,'created_at'|'updated_at'>,create:boolean){const now=new Date().toISOString();if(create)await env.DB.prepare('INSERT INTO internal_staff(id,name,email,phone,department,job_title,role,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?)').bind(d.id,d.name,d.email,d.phone,d.department,d.job_title,d.role,d.status,now,now).run();else await env.DB.prepare('UPDATE internal_staff SET name=?,email=?,phone=?,department=?,job_title=?,role=?,status=?,updated_at=? WHERE id=?').bind(d.name,d.email,d.phone,d.department,d.job_title,d.role,d.status,now,d.id).run();}

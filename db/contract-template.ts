@@ -1,0 +1,7 @@
+import {env} from 'cloudflare:workers';
+import {headers} from 'next/headers';
+import {defaultContractTemplate,type ContractTemplate} from '@/lib/contract-template';
+export async function templateOwner(){const h=await headers(),email=h.get('oai-authenticated-user-email')?.toLowerCase();return h.get('oai-authenticated-user-id')&&(email==='keldy66@gmail.com'||(import.meta.env.DEV&&email==='seedy@sites.test'))?email:null;}
+export async function getContractTemplate(){const row=await env.DB.prepare('SELECT revision,payload FROM contract_template_versions ORDER BY revision DESC LIMIT 1').first<{revision:number;payload:string}>();return row?{revision:row.revision,template:JSON.parse(row.payload) as ContractTemplate}:{revision:0,template:defaultContractTemplate()};}
+export async function templateHistory(){return (await env.DB.prepare('SELECT revision,actor,created_at FROM contract_template_versions ORDER BY revision DESC LIMIT 10').all<{revision:number;actor:string;created_at:string}>()).results;}
+export async function saveContractTemplate(template:ContractTemplate,baseRevision:number,actor:string){const row=await env.DB.prepare('INSERT INTO contract_template_versions(payload,actor,created_at) SELECT ?,?,? WHERE COALESCE((SELECT MAX(revision) FROM contract_template_versions),0)=? RETURNING revision').bind(JSON.stringify(template),actor,new Date().toISOString(),baseRevision).first<{revision:number}>();return row?{revision:row.revision,template}:null;}

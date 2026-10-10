@@ -1,0 +1,2 @@
+import Link from '@/components/safe-link';
+export default function NotFound(){return <div dir="rtl" className="grid min-h-screen place-items-center bg-[#f5f7f7]"><div className="text-center"><b className="text-xl">الطلب غير موجود</b><p className="my-3 text-sm text-[#718187]">ربما تم تغيير الرابط أو لا تملك صلاحية عرضه.</p><Link href="/requests" className="text-sm font-bold text-[#9d650e]">العودة إلى قائمة العمل</Link></div></div>}

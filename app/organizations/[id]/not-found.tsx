@@ -1,0 +1,1 @@
+import Link from 'next/link';export default function NotFound(){return <div dir="rtl" className="p-10 text-center"><h1 className="text-xl font-bold">الشركة غير موجودة</h1><Link href="/organizations" className="mt-4 inline-block text-blue-700">العودة إلى الشركات</Link></div>}

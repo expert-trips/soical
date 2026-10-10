@@ -1,0 +1,2 @@
+'use client';
+export default function ErrorState({reset}:{reset:()=>void}){return <div dir="rtl" className="grid min-h-screen place-items-center bg-[#f5f7f7]"><div className="text-center"><b>تعذر تحميل الطلبات</b><p className="my-3 text-sm text-[#718187]">لم نتمكن من الوصول للبيانات الآن.</p><button onClick={reset} className="rounded-lg bg-[#273840] px-4 py-2 text-sm text-white">إعادة المحاولة</button></div></div>}

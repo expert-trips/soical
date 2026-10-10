@@ -1,0 +1,3 @@
+import {integer,sqliteTable,text,index} from 'drizzle-orm/sqlite-core';
+export const documentCounters=sqliteTable('document_counters',{scope:text('scope').primaryKey(),value:integer('value').notNull()});
+export const contractArchive=sqliteTable('contract_archive',{id:text('id').primaryKey(),organizationId:text('organization_id').notNull(),contractNumber:text('contract_number').notNull(),objectKey:text('object_key').notNull(),sha256:text('sha256').notNull(),snapshot:text('snapshot').notNull(),createdAt:text('created_at').notNull(),actor:text('actor').notNull()},t=>[index('idx_contract_archive_org_date').on(t.organizationId,t.createdAt)]);

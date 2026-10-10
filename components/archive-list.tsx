@@ -1,0 +1,5 @@
+import Link from '@/components/safe-link';
+import type {ArchiveRow} from '@/db/contract-archive';
+export function ArchiveList({items}:{items:ArchiveRow[]}){
+ return <div className="space-y-3">{items.length?items.map(item=><div key={item.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-4"><div><b>{item.contract_number}</b><p className="text-sm text-slate-600">{item.company_name} · رقم العميل: {item.organization_id}</p><p className="text-sm text-slate-500">{new Date(item.created_at).toLocaleString('ar-SA')} · حفظ بواسطة {item.actor}</p></div><div className="flex gap-2"><a href={'/api/contract-archive/'+item.id} target="_blank" rel="noopener noreferrer" className="rounded-lg border px-3 py-2 text-sm">عرض النسخة</a><a href={'/api/contract-archive/'+item.id+'?download=1'} className="rounded-lg bg-[#064a78] px-3 py-2 text-sm text-white">تنزيل</a></div></div>):<p className="rounded-xl border border-dashed p-6 text-center text-slate-500">لا توجد نسخ مؤرشفة بعد.</p>}</div>;
+}

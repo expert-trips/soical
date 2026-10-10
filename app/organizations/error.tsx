@@ -1,0 +1,1 @@
+'use client';export default function Error({reset}:{reset:()=>void}){return <div dir="rtl" className="m-8 rounded-xl border bg-white p-8 text-center"><p>تعذر تحميل الشركات.</p><button onClick={reset} className="mt-4 rounded-lg bg-[#064a78] px-4 py-2 text-white">إعادة المحاولة</button></div>}
